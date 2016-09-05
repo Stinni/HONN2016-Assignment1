@@ -10,17 +10,14 @@ package is.ru.honn.P2_BanksRUs.Accounts;
  */
 abstract public class Account {
 
-    private int accountNumber;
+    protected int accountNumber;
     // accountOwner: an integer that corresponds to a customerId
-    private int accountOwner;
+    protected int accountOwner;
     // accountStatus: true if it's active, false if it's closed
-    private boolean accountStatus;
-    private String accountName;
+    protected boolean accountStatus;
+    protected String accountName;
     protected double balance;
 
-    // Default constructor sets accountStatus to false, balance to 0 and other
-    // variables to -1 or null so that the account won't get used before setting
-    // all the variables.
     public Account() {
         accountNumber = -1;
         accountOwner = -1;
@@ -53,10 +50,18 @@ abstract public class Account {
         return accountOwner;
     }
 
+    /**
+     * The setAccountStatus function sets the accountStatus bool variable
+     * to the parameter's value. Changing it to false will always work but
+     * if any of the other variables haven't been set, it's not possible
+     * to activate the account!
+     *
+     * @param accStatus bool value to set accountStatus to
+     */
     public void setAccountStatus(boolean accStatus) {
-        if(accStatus && !(accountNumber < 0 || accountOwner < 0 || accountName == null)) {
+        if(!accStatus) {
             accountStatus = accStatus;
-        } else {
+        } else if(accStatus && !(accountNumber < 0 || accountOwner < 0 || accountName == null)) {
             accountStatus = accStatus;
         }
     }
@@ -73,7 +78,17 @@ abstract public class Account {
         return accountName;
     }
 
+    public double getBalance() {
+        return balance;
+    }
+
     public abstract void deposit(double amount);
 
     public abstract void withdraw(double amount);
+
+    public String toString() {
+        return "accountNumber: " + accountNumber + ", accountOwner: " + accountOwner +
+               ", accountStatus: " + accountStatus + ", accountName: " + accountName +
+               ", balance: " + balance;
+    }
 }

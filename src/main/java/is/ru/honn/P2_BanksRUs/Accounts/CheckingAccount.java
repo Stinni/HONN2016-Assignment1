@@ -10,6 +10,15 @@ package is.ru.honn.P2_BanksRUs.Accounts;
  * @version 1, 04.09.16
  */
 public class CheckingAccount extends Account {
+
+    public CheckingAccount() {
+        super();
+    }
+
+    public CheckingAccount(int accNumber, int accOwner, String accName) {
+        super(accNumber, accOwner, accName);
+    }
+
     @Override
     public void deposit(double amount) {
         if(amount < 0) {

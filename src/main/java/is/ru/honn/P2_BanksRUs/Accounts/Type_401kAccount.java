@@ -10,6 +10,15 @@ package is.ru.honn.P2_BanksRUs.Accounts;
  * @version 1, 04.09.16
  */
 public class Type_401kAccount extends Account {
+
+    public Type_401kAccount() {
+        super();
+    }
+
+    public Type_401kAccount(int accNumber, int accOwner, String accName) {
+        super(accNumber, accOwner, accName);
+    }
+
     @Override
     public void deposit(double amount) {
         if(amount < 0) {
