@@ -1,5 +1,7 @@
 package is.ru.honn.P2_BanksRUs.Accounts;
 
+import java.text.SimpleDateFormat;
+
 /**
  * Hönnun og Smíði Hugbúnaðar - Assignment 1, Part 2:
  * The Layer Supertype class Account (Account.java)
@@ -32,6 +34,20 @@ abstract public class Account {
         accountStatus = true;
         accountName = accName;
         balance = 0;
+    }
+
+    /**
+     * This constructor's only meant to be used when reading and populating the "database"
+     * from a file.
+     * @param aStatus The status of the account, true for active and false for inactive
+     * @param b The account's balance
+     */
+    public Account(int accNumber, int accOwner, boolean aStatus, String accName, double b) {
+        accountNumber = accNumber;
+        accountOwner = accOwner;
+        accountStatus = aStatus;
+        accountName = accName;
+        balance = b;
     }
 
     public void setAccountNumber(int accNumber) {
@@ -87,8 +103,9 @@ abstract public class Account {
     public abstract void withdraw(double amount);
 
     public String toString() {
-        return "accountNumber: " + accountNumber + ", accountOwner: " + accountOwner +
-               ", accountStatus: " + accountStatus + ", accountName: " + accountName +
-               ", balance: " + balance;
+        //SimpleDateFormat formatter = new SimpleDateFormat("yyyy.MM.dd");
+        return "{\"accountNumber\": " + accountNumber + ", \"accountOwner\": " + accountOwner +
+               ", \"accountStatus\": " + accountStatus + ", \"accountName\": \"" + accountName +
+               "\", \"balance\": " + balance + "}";
     }
 }

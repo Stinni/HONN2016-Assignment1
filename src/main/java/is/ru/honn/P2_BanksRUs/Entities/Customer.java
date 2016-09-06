@@ -1,5 +1,6 @@
 package is.ru.honn.P2_BanksRUs.Entities;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -15,13 +16,6 @@ public class Customer {
     private String customerName;
     private Date customerDateOfBirth;
     private String customerAddress;
-
-    public Customer() {
-        customerId = -1;
-        customerName = null;
-        customerDateOfBirth = null;
-        customerAddress = null;
-    }
 
     public Customer(int cId, String cName, Date cDateOfBirth, String cAddress) {
         customerId = cId;
@@ -63,8 +57,9 @@ public class Customer {
     }
 
     public String toString() {
-        return "customerId: " + customerId + ", customerName: "+ customerName +
-               ", customerDateOfBirth: " + customerDateOfBirth + ", customerAddress: " +
-                customerAddress;
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        return "{\"customerId\": " + customerId + ", \"customerName\": \""+ customerName +
+               "\", \"customerDateOfBirth\": \"" + formatter.format(customerDateOfBirth) +
+                "\", \"customerAddress\": \"" + customerAddress + "\"}";
     }
 }

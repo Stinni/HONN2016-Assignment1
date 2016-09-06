@@ -9,7 +9,7 @@ package is.ru.honn.P2_BanksRUs.Accounts;
  * @author Kristinn Heiðar Freysteinsson
  * @version 1, 04.09.16
  */
-public class CheckingAccount extends Account {
+public class CheckingAccount extends Account implements IOwerdrawable {
 
     public CheckingAccount() {
         super();
@@ -17,6 +17,16 @@ public class CheckingAccount extends Account {
 
     public CheckingAccount(int accNumber, int accOwner, String accName) {
         super(accNumber, accOwner, accName);
+    }
+
+    /**
+     * This constructor's only meant to be used when reading and populating the "database"
+     * from a file.
+     * @param aStatus The status of the account, true for active and false for inactive
+     * @param b The account's balance
+     */
+    public CheckingAccount(int accNumber, int accOwner, boolean aStatus, String accName, double b) {
+        super(accNumber, accOwner, aStatus, accName, b);
     }
 
     @Override
