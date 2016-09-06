@@ -98,12 +98,11 @@ abstract public class Account {
         return balance;
     }
 
-    public abstract void deposit(double amount);
+    public abstract void deposit(double amount) throws UnsupportedOperationException, IllegalArgumentException;
 
-    public abstract void withdraw(double amount);
+    public abstract void withdraw(double amount) throws UnsupportedOperationException, IllegalArgumentException;
 
     public String toString() {
-        //SimpleDateFormat formatter = new SimpleDateFormat("yyyy.MM.dd");
         return "{\"accountNumber\": " + accountNumber + ", \"accountOwner\": " + accountOwner +
                ", \"accountStatus\": " + accountStatus + ", \"accountName\": \"" + accountName +
                "\", \"balance\": " + balance + "}";

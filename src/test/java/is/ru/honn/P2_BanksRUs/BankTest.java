@@ -1,13 +1,15 @@
-package is.ru.honn.P2_BanksRUs.Accounts;
+package is.ru.honn.P2_BanksRUs;
 
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 import static org.junit.Assert.*;
 
 /**
- * Created by KristinnHeiðar on 5.9.2016.
+ * Created by KristinnHeiðar on 6.9.2016.
  */
-public class AccountTest {
+public class BankTest {
     @Before
     public void setUp() throws Exception {
 
@@ -22,4 +24,5 @@ public class AccountTest {
     public void tearDown() throws Exception {
 
     }
+
 }

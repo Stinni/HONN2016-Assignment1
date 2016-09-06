@@ -11,12 +11,19 @@ package is.ru.honn.P2_BanksRUs.Accounts;
  */
 public class SavingsAccount extends Account {
 
+    private int nrOfAllowedTransactions;
+    private int nrOfTransactionsDone;
+
     public SavingsAccount() {
         super();
+        nrOfAllowedTransactions = 0;
+        nrOfTransactionsDone = 0;
     }
 
     public SavingsAccount(int accNumber, int accOwner, String accName) {
         super(accNumber, accOwner, accName);
+        nrOfAllowedTransactions = 0;
+        nrOfTransactionsDone = 0;
     }
 
     /**
@@ -25,13 +32,18 @@ public class SavingsAccount extends Account {
      * @param aStatus The status of the account, true for active and false for inactive
      * @param b The account's balance
      */
-    public SavingsAccount(int accNumber, int accOwner, boolean aStatus, String accName, double b) {
+    public SavingsAccount(int accNumber, int accOwner, boolean aStatus, String accName, double b,
+                          int nrOfAllowedTs, int nrOfTsDone) {
         super(accNumber, accOwner, aStatus, accName, b);
+        nrOfAllowedTransactions = nrOfAllowedTs;
+        nrOfTransactionsDone = nrOfTsDone;
     }
 
     @Override
-    public void deposit(double amount) {
-        if(amount < 0) {
+    public void deposit(double amount) throws UnsupportedOperationException, IllegalArgumentException {
+        if(!accountStatus) {
+            throw new UnsupportedOperationException("This account isn't active!!!");
+        } else if(amount < 0) {
             throw new IllegalArgumentException("Can't deposit a negative amount!");
         } else {
             balance += amount;
@@ -39,13 +51,26 @@ public class SavingsAccount extends Account {
     }
 
     @Override
-    public void withdraw(double amount) {
-        if(balance < amount) {
-            throw new UnsupportedOperationException("The balance is too low to withdraw that amount!");
+    public void withdraw(double amount) throws UnsupportedOperationException, IllegalArgumentException {
+        if(!accountStatus) {
+            throw new UnsupportedOperationException("This account isn't active!!!");
         } else if(amount < 0) {
             throw new IllegalArgumentException("Can't withdraw a negative amount!");
-        } else {
+        } else if(nrOfTransactionsDone >= nrOfAllowedTransactions) {
+            System.out.println("The limit of transactions has been reached!");
+        } else if(balance < amount) {
+            throw new UnsupportedOperationException("The balance is too low to withdraw that amount!");
+        }else {
             balance -= amount;
+            nrOfTransactionsDone++;
         }
+    }
+
+    @Override
+    public String toString() {
+        return "{\"accountNumber\": " + accountNumber + ", \"accountOwner\": " + accountOwner +
+                ", \"accountStatus\": " + accountStatus + ", \"accountName\": \"" + accountName +
+                "\", \"balance\": " + balance + ", \"nrOfAllowedTransactions\": " +
+                nrOfAllowedTransactions + ", \"nrOfTransactionsDone\": " + nrOfTransactionsDone + "}";
     }
 }

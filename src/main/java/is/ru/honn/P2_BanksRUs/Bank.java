@@ -11,8 +11,10 @@ import org.json.simple.parser.ParseException;
 
 /**
  * Hönnun og Smíði Hugbúnaðar - Assignment 1, Part 2:
- * The class Bank (Bank.java)
+ * The class and program Bank (Bank.java)
  * Keeps info about the Bank, it's customers and accounts
+ *
+ * The main method is mainly for testing the program
  *
  * @author Kristinn Heiðar Freysteinsson
  * @version 1, 04.09.16
@@ -27,6 +29,7 @@ public class Bank {
         filePath = "AllCustomersAndAccounts.json";
         customers = new ArrayList<Customer>();
         accounts = new ArrayList<Account>();
+        readEntitiesFromFile();
     }
 
     public Bank(String fp) {
@@ -54,15 +57,120 @@ public class Bank {
         customers.add(newCustomer);
     }
 
+    private Customer findCustomer(int cId) {
+        Customer cTmp = null;
+        for(Customer c : customers) {
+            if(c.getCustomerId() == cId) {
+                cTmp = (Customer) c;
+                break;
+            }
+        }
+        return cTmp;
+    }
+
+    private Account findAccount(int aNumber) {
+        Account aTmp = null;
+        for(Account a : accounts) {
+            if(a.getAccountNumber() == aNumber) {
+                aTmp = (Account) a;
+                break;
+            }
+        }
+        return aTmp;
+    }
+
+    /* Here should be more customer related functions, like updating name or address
+    * I'll leave a 'todo' here but please note that I didn't intend to implement more
+    * customer related function at this time...
+    * TODO: Implement more customer related functions    */
+
+
+    public void addAccount(int type, int accOwner, String accName) {
+        if(type >= 0 && type <= 2) {
+            if(!(findCustomer(accOwner) == null)) {
+                int accNumber = checkForNextAId();
+                Account tmp;
+                if (type == 0) {
+                    tmp = new CheckingAccount(accNumber, accOwner, accName);
+                } else if (type == 1) {
+                    tmp = new SavingsAccount(accNumber, accOwner, accName);
+                } else {
+                    tmp = new Type_401kAccount(accNumber, accOwner, accName);
+                }
+                accounts.add(tmp);
+            } else {
+                System.out.println("A customer with Id: " + accOwner + " doesn't exist!");
+            }
+        } else {
+            System.out.println("Invalid account type! Use 0, 1 or 2 accordingly.");
+        }
+    }
+
+    public void depositToAccount(int accountNumber, double amount) {
+        Account aTmp = findAccount(accountNumber);
+
+        if(aTmp == null) {
+            System.out.println("There's no account registered with Id: " + accountNumber);
+        } else {
+            try {
+                aTmp.deposit(amount); // :)
+            } catch (UnsupportedOperationException e) {
+                System.out.println(e.getMessage());
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+    }
+
+    public void withdrawFromAccount(int accountNumber, double amount) {
+        Account aTmp = findAccount(accountNumber);
+
+        if(aTmp == null) {
+            System.out.println("There's no account registered with Id: " + accountNumber);
+        } else if(aTmp instanceof Type_401kAccount) {
+            Date customerDOB = findCustomer(aTmp.getAccountOwner()).getCustomerDateOfBirth();
+            Calendar cal = Calendar.getInstance();
+            cal.add(Calendar.YEAR, -65);
+            Date todayMinus65Years = cal.getTime();
+            if(customerDOB.before(todayMinus65Years)) {
+                try {
+                    aTmp.withdraw(amount); // :)
+                } catch(UnsupportedOperationException e) {
+                    System.out.println(e.getMessage());
+                } catch(IllegalArgumentException e) {
+                    System.out.println(e.getMessage());
+                }
+            } else {
+                System.out.println("Withdrawal from account not possible until the owner is 65 years old!");
+            }
+        } else {
+            try {
+                aTmp.withdraw(amount); // :)
+            } catch(UnsupportedOperationException e) {
+                System.out.println(e.getMessage());
+            } catch(IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+    }
+
     /**
      * New customers get an Id that is 1 greater than the number of customers
-     * in the current "database." Mock data follows that rule.
+     * in the current "database." The given mock data follows that rule.
      * In future implementations, we would use a database or some other way
      * to create these unique Id's for new customers
      * @return customers array size + 1
      */
     private int checkForNextCId() {
         return customers.size() + 1;
+    }
+
+    /**
+     * The same rule applies for account Id's as with the customer Id's
+     * @return accounts array size + 1
+     */
+    private int checkForNextAId() {
+        return accounts.size() + 1;
     }
 
     public void readEntitiesFromFile() {
@@ -121,8 +229,13 @@ public class Bank {
                 boolean aStatus = Boolean.valueOf(cObj.get("accountStatus").toString());
                 String aName = cObj.get("accountName").toString();
                 double balance = (Double) cObj.get("balance");
+                double allowedOd = (Double) cObj.get("allowedOverdraw");
+                int nrOfFreeWithdrawals = Integer.parseInt(cObj.get("nrOfFreeWithdrawals").toString());
+                int nrOfFreeWdDone = Integer.parseInt(cObj.get("nrOfFreeWdDone").toString());
+                double wFee = (Double) cObj.get("withdrawalFee");
 
-                CheckingAccount cTmp = new CheckingAccount(aNumber, oNumber, aStatus, aName, balance);
+                CheckingAccount cTmp = new CheckingAccount(aNumber, oNumber, aStatus, aName, balance,
+                        allowedOd, nrOfFreeWithdrawals, nrOfFreeWdDone, wFee);
                 accounts.add(cTmp);
             } else if(sObj != null) {
                 int aNumber = Integer.parseInt(sObj.get("accountNumber").toString());
@@ -130,8 +243,11 @@ public class Bank {
                 boolean aStatus = Boolean.valueOf(sObj.get("accountStatus").toString());
                 String aName = sObj.get("accountName").toString();
                 double balance = (Double) sObj.get("balance");
+                int nrOfAllowedTs = Integer.parseInt(sObj.get("nrOfAllowedTransactions").toString());
+                int nrOfTsDone = Integer.parseInt(sObj.get("nrOfTransactionsDone").toString());
 
-                SavingsAccount sTmp = new SavingsAccount(aNumber, oNumber, aStatus, aName, balance);
+                SavingsAccount sTmp = new SavingsAccount(aNumber, oNumber, aStatus, aName, balance,
+                        nrOfAllowedTs, nrOfTsDone);
                 accounts.add(sTmp);
             } else if(tObj != null) {
                 int aNumber = Integer.parseInt(tObj.get("accountNumber").toString());
@@ -164,27 +280,29 @@ public class Bank {
         System.out.println(serializeAccounts(accounts).toJSONString());
     }
 
+    /**
+     *
+     */
     public void prettyPrintAllActiveAccountsFor() {
-        ArrayList<Account> tmpList = new ArrayList<Account>();
-        System.out.println("Enter the customer's Id: ");
         Scanner in = new Scanner(System.in);
+        System.out.println("Enter the customer's Id: ");
         String cmd = in.next();
         try {
             int tmp = Integer.parseInt(cmd);
-            tmpList = findAllActiveAccountsFor(tmp);
-            if(tmpList.isEmpty()) {
-                System.out.println("There're no active accounts for customer with Id: " + tmp);
-                return;
-            }
+            prettyPrintAllActiveAccountsFor(tmp);
         } catch (NumberFormatException e) {
             System.out.println("You have to enter a number!");
         }
-
-        System.out.println(serializeAccounts(tmpList).toJSONString());
     }
 
     public void prettyPrintAllActiveAccountsFor(int customerId) {
-        System.out.println(serializeAccounts(findAllActiveAccountsFor(customerId)).toJSONString());
+        ArrayList<Account> tmpList = findAllActiveAccountsFor(customerId);
+        if(tmpList.isEmpty()) {
+            System.out.println("There're no active accounts for customer with Id: " + customerId);
+        } else {
+            System.out.println("All active accounts for customer with Id: " + customerId);
+            System.out.println(serializeAccounts(tmpList).toJSONString());
+        }
     }
 
     public ArrayList<Account> findAllActiveAccountsFor(int customerId) {
@@ -269,8 +387,11 @@ public class Bank {
                 Customer cTmp1 = new Customer(1, "Kristinn", c.getTime(), "Menntavegur 1");
                 theBank.customers.add(cTmp1);
                 c.set(1981, 8, 27);
-                Customer cTmp2 = new Customer(2, "Halldór", c.getTime(), "Hringbraut 133");
+                Customer cTmp2 = new Customer(2, "Halldór", c.getTime(), "Skólavegur 2");
                 theBank.customers.add(cTmp2);
+                c.set(1951, 8, 5); // Just 1 day over 65 years old
+                Customer cTmp3 = new Customer(3, "Freysteinn", c.getTime(), "Skólavegur 3");
+                theBank.customers.add(cTmp3);
             }
             if(theBank.accounts.isEmpty()) {
                 CheckingAccount aTmp1 = new CheckingAccount(1, 1, "Tékkareikningur");
@@ -281,6 +402,10 @@ public class Bank {
                 theBank.accounts.add(aTmp3);
                 Type_401kAccount aTmp4 = new Type_401kAccount(4, 2, "Lífeyrissparnaður");
                 theBank.accounts.add(aTmp4);
+                Type_401kAccount aTmp5 = new Type_401kAccount(5, 1, true, "Lífeyrir", 5000.0);
+                theBank.accounts.add(aTmp5);
+                Type_401kAccount aTmp6 = new Type_401kAccount(6, 3, true, "Lífeyrir", 5000.0);
+                theBank.accounts.add(aTmp6);
             }
         } else {
             theBank  = new Bank(args[0]);
@@ -290,7 +415,8 @@ public class Bank {
         while (!cmd.equalsIgnoreCase("q") && !cmd.equalsIgnoreCase("quit")) {
             System.out.println("Available commands:");
             System.out.println("p/print: Prints all accounts for all customers");
-            System.out.println("printfor: Prints all active accounts for a certain customer");
+            System.out.println("pf/printfor: Prints all active accounts for a certain customer");
+            System.out.println("pa/printall: Prints all customers and accounts");
             System.out.println("s/save: Saves all customers and accounts to files");
             System.out.println("q/quit: Terminates the program");
             System.out.print("Enter command: ");
@@ -299,9 +425,15 @@ public class Bank {
                 theBank.prettyPrintAllEntitiesToFile();
             } else if (cmd.equalsIgnoreCase("p") || cmd.equalsIgnoreCase("print")) {
                 theBank.prettyPrintAllAccounts();
-            } else if(cmd.equalsIgnoreCase("printfor")) {
+            } else if(cmd.equalsIgnoreCase("pf") || cmd.equalsIgnoreCase("printfor")) {
                 theBank.prettyPrintAllActiveAccountsFor();
-            } else if (!(cmd.equalsIgnoreCase("q") || cmd.equalsIgnoreCase("quit"))) {
+            } else if(cmd.equalsIgnoreCase("pa") || cmd.equalsIgnoreCase("printall")) {
+                System.out.println(theBank);
+            } else if(cmd.equalsIgnoreCase("wa")) {
+                theBank.withdrawFromAccount(5, 1000.0);
+            } else if(cmd.equalsIgnoreCase("wb")) {
+                theBank.withdrawFromAccount(6, 1000.0);
+            } else if(!(cmd.equalsIgnoreCase("q") || cmd.equalsIgnoreCase("quit"))) {
                 System.out.println("Unknown command");
             }
         }

@@ -30,8 +30,10 @@ public class Type_401kAccount extends Account {
     }
 
     @Override
-    public void deposit(double amount) {
-        if(amount < 0) {
+    public void deposit(double amount) throws UnsupportedOperationException, IllegalArgumentException {
+        if(!accountStatus) {
+            throw new UnsupportedOperationException("This account isn't active!!!");
+        } else if(amount < 0) {
             throw new IllegalArgumentException("Can't deposit a negative amount!");
         } else {
             balance += amount;
@@ -39,11 +41,13 @@ public class Type_401kAccount extends Account {
     }
 
     @Override
-    public void withdraw(double amount) {
-        if(balance < amount) {
-            throw new UnsupportedOperationException("The balance is too low to withdraw that amount!");
+    public void withdraw(double amount) throws UnsupportedOperationException, IllegalArgumentException {
+        if(!accountStatus) {
+            throw new UnsupportedOperationException("This account isn't active!!!");
         } else if(amount < 0) {
             throw new IllegalArgumentException("Can't withdraw a negative amount!");
+        } else if(balance < amount) {
+            throw new UnsupportedOperationException("The balance is too low to withdraw that amount!");
         } else {
             balance -= amount;
         }
