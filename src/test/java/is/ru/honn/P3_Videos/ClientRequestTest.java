@@ -1,6 +1,5 @@
 package is.ru.honn.P3_Videos;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -10,14 +9,12 @@ import static org.junit.Assert.*;
  * Created by KristinnHeiðar on 6.9.2016.
  */
 public class ClientRequestTest {
+
+    private ClientRequest cRequest;
+
     @Before
     public void setUp() throws Exception {
-        ClientRequest cRequest = new ClientRequest();
-    }
-
-    @After
-    public void tearDown() throws Exception {
-
+        cRequest = new ClientRequest();
     }
 
     @Test
@@ -29,5 +26,4 @@ public class ClientRequestTest {
     public void getRequest() throws Exception {
 
     }
-
 }

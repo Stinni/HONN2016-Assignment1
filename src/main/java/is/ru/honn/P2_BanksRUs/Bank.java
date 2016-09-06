@@ -39,6 +39,16 @@ public class Bank {
         readEntitiesFromFile();
     }
 
+    // Start of functions for testing
+    public int getCustomerCount() {
+        return customers.size();
+    }
+
+    public int getAccountsCount() {
+        return accounts.size();
+    }
+    // End of functions for testing
+
     /**
      * The addCustomer adds a new customer to the "database" unless one or both of the
      * strings that hold the name and address are empty/null
@@ -462,7 +472,6 @@ public class Bank {
      * present, the Bank tries to read from a default file path. If that fails,
      * some mock data is made and inserted into the Bank's "database."
      *
-     * Saving
      * @param args Program arguments, leave empty or path for an input file
      */
     public static void main(String[] args) {

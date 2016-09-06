@@ -1,8 +1,9 @@
 package is.ru.honn.P2_BanksRUs;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.Calendar;
 
 import static org.junit.Assert.*;
 
@@ -19,62 +20,29 @@ public class BankTest {
 
     @Test
     public void testAddCustomer() throws Exception {
-        assertEquals(3.0, theBank.);
-
+        assertEquals(3.0, (double) theBank.getCustomerCount(), 0.1);
+        Calendar c = Calendar.getInstance();
+        c.set(1988, 10, 19);
+        theBank.addCustomer("Catherine", c.getTime(), "Menntavegur 10");
+        assertEquals(4.0, (double) theBank.getCustomerCount(), 0.1);
     }
 
     @Test
-    public void addAccount() throws Exception {
-
+    public void testAddAccount() throws Exception {
+        assertEquals(6.0, (double) theBank.getAccountsCount(), 0.1);
+        theBank.addAccount(2, 1, "testing");
+        assertEquals(7.0, (double) theBank.getAccountsCount(), 0.1);
     }
 
-    @Test
+    /*
+    @Test // TODO: implement a few tests for deposits
     public void depositToAccount() throws Exception {
 
     }
 
-    @Test
+    @Test // TODO: implement a few tests for withdrawals
     public void withdrawFromAccount() throws Exception {
 
     }
-
-    @Test
-    public void readEntitiesFromFile() throws Exception {
-
-    }
-
-    @Test
-    public void fillCustomersArray() throws Exception {
-
-    }
-
-    @Test
-    public void fillAccountsArray() throws Exception {
-
-    }
-
-    @Test
-    public void findAllActiveAccountsFor() throws Exception {
-
-    }
-
-    @Test
-    public void serializeAccounts() throws Exception {
-
-    }
-
-    @Test
-    public void printToFile() throws Exception {
-
-    }
-
-    /*@Test
-    public void toString() throws Exception {
-
-    }*/
-
-    @After
-    public void tearDown() throws Exception {
-
-    }
+    */
 }
