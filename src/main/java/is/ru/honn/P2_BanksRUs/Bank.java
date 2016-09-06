@@ -348,6 +348,7 @@ public class Bank {
         }
     }
 
+    @Override
     public String toString() {
         String tmp = "------ List of all customers: ------\n";
         if(customers.isEmpty()) {

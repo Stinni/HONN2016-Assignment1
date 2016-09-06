@@ -1,10 +1,12 @@
 package is.ru.honn.P3_Videos;
 
+import is.ru.honn.P3_Videos.Entities.*;
+
 /**
  * Hönnun og Smíði Hugbúnaðar - Assignment 1, Part 3:
  * The class TestParseUrl (TestParseUrl.java)
  * This class's only function is to instantiate the ClientRequest
- * and VideoParser classes, get a string from url/web and
+ * and VideoParser classes, get a string from url and
  * pass it on to be parsed and printed.
  *
  * @author Kristinn Heiðar Freysteinsson
@@ -18,5 +20,7 @@ public class TestParseUrl {
         String content = clientReq.getRequest(
                 "https://www.mockaroo.com/e97aedd0/download?count=1&key=e79a3650");
         vParser.parseAndPrint(content);
+        //Catalog catalog = vParser.parseVideo(content);
+        //System.out.println(catalog);
     }
 }
