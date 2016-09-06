@@ -42,9 +42,9 @@ public class Bank {
     /**
      * The addCustomer adds a new customer to the "database" unless one or both of the
      * strings that hold the name and address are empty/null
-     * @param cName The new customer's name
-     * @param cDateOfBirth The new customer's date of birth
-     * @param cAddress The new customer's address
+     * @param cName The customer's name
+     * @param cDateOfBirth The customer's date of birth
+     * @param cAddress The customer's address
      */
     public void addCustomer(String cName, Date cDateOfBirth, String cAddress) {
         if(cName == null || cAddress == null) {
@@ -57,6 +57,14 @@ public class Bank {
         customers.add(newCustomer);
     }
 
+    /**
+     * Checks if the customers array includes a customer
+     * with a certain Id and returns that customer or
+     * null if not found.
+     *
+     * @param cId the customer's Id
+     * @return the customer or null
+     */
     private Customer findCustomer(int cId) {
         Customer cTmp = null;
         for(Customer c : customers) {
@@ -68,6 +76,14 @@ public class Bank {
         return cTmp;
     }
 
+    /**
+     * Checks if the accounts array includes an account
+     * with a certain accountNumber and returns that
+     * account or null if not found.
+     *
+     * @param aNumber the customer's Id
+     * @return the account or null
+     */
     private Account findAccount(int aNumber) {
         Account aTmp = null;
         for(Account a : accounts) {
@@ -86,6 +102,8 @@ public class Bank {
 
 
     public void addAccount(int type, int accOwner, String accName) {
+        // There're only 3 types of accounts. Therefore it's enough to check if the
+        // I would like to do this differently
         if(type >= 0 && type <= 2) {
             if(!(findCustomer(accOwner) == null)) {
                 int accNumber = checkForNextAId();
