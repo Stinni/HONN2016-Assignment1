@@ -100,10 +100,19 @@ public class Bank {
     * customer related function at this time...
     * TODO: Implement more customer related functions    */
 
-
+    /**
+     * The addAccount function takes in an integer (0, 1 or 2) for which account
+     * type is being created. 0 is for a Checking Account, 1 is for a Savings
+     * Account and 2 is for a 401k Account.
+     * An account can't be created for a customer that doesn't exist.
+     *
+     * @param type 0-2 for the account types
+     * @param accOwner the Id number of the account's owner
+     * @param accName the name of the account
+     */
     public void addAccount(int type, int accOwner, String accName) {
-        // There're only 3 types of accounts. Therefore it's enough to check if the
-        // I would like to do this differently
+        // There're only 3 types of accounts. Therefore it's enough to check if the type param
+        // is 0, 1 or 2. I would like to do this differently but it'll do this time.
         if(type >= 0 && type <= 2) {
             if(!(findCustomer(accOwner) == null)) {
                 int accNumber = checkForNextAId();
@@ -124,6 +133,16 @@ public class Bank {
         }
     }
 
+    /**
+     * The function depositToAccount adds the amount being deposited to
+     * a certain account. If an account with the given Id number isn't
+     * found, an error message is printed out.
+     * The accounts check if they're active themselves and throw exceptions
+     * with corresponding messages that're then printed out.
+     *
+     * @param accountNumber the number of the account receiving the deposit
+     * @param amount the deposited amount
+     */
     public void depositToAccount(int accountNumber, double amount) {
         Account aTmp = findAccount(accountNumber);
 
@@ -140,6 +159,16 @@ public class Bank {
         }
     }
 
+    /**
+     * The function withdrawFromAccount withdraws the requested amount from
+     * a certain account. If an account with the given Id number isn't
+     * found, an error message is printed out.
+     * The accounts check if they're active themselves and throw exceptions
+     * with corresponding messages that're then printed out.
+     *
+     * @param accountNumber the number of the account being withdrawn from
+     * @param amount the amount being withdrawn
+     */
     public void withdrawFromAccount(int accountNumber, double amount) {
         Account aTmp = findAccount(accountNumber);
 
@@ -150,20 +179,22 @@ public class Bank {
             Calendar cal = Calendar.getInstance();
             cal.add(Calendar.YEAR, -65);
             Date todayMinus65Years = cal.getTime();
+            // Checks if 65 years have passed from the customer's birthday
             if(customerDOB.before(todayMinus65Years)) {
                 try {
-                    aTmp.withdraw(amount); // :)
+                    aTmp.withdraw(amount);
                 } catch(UnsupportedOperationException e) {
                     System.out.println(e.getMessage());
                 } catch(IllegalArgumentException e) {
                     System.out.println(e.getMessage());
                 }
             } else {
-                System.out.println("Withdrawal from account not possible until the owner is 65 years old!");
+                System.out.println("Withdrawal from account not possible! The account's owner" +
+                        " has to be at least 65 years old!");
             }
         } else {
             try {
-                aTmp.withdraw(amount); // :)
+                aTmp.withdraw(amount);
             } catch(UnsupportedOperationException e) {
                 System.out.println(e.getMessage());
             } catch(IllegalArgumentException e) {
@@ -191,6 +222,11 @@ public class Bank {
         return accounts.size() + 1;
     }
 
+    /**
+     * Reads info in Json form from a file (if present), parses it
+     * and splits into two arrays that're then passed on to other
+     * functions to populate the Bank's database.
+     */
     public void readEntitiesFromFile() {
         JSONParser parser = new JSONParser();
         try {
@@ -210,14 +246,20 @@ public class Bank {
         }
     }
 
+    /**
+     * The function fillCustomersArray takes in a JsonArray and
+     * uses it to populate the Bank's customers array
+     *
+     * @param allCustomers JsonArray containing all the customers
+     */
     public void fillCustomersArray(JSONArray allCustomers) {
         Iterator<JSONObject> iterator = allCustomers.iterator();
         while(iterator.hasNext()) {
             JSONObject jTmp = (JSONObject) iterator.next();
 
-            // The only way I found to change an integer in json format to int was to first change it to a string
             int cId = Integer.parseInt(jTmp.get("customerId").toString());
             String cName = jTmp.get("customerName").toString();
+
             String cDOB = jTmp.get("customerDateOfBirth").toString();
             String[] cDOBArray = cDOB.split("-");
             int yearOfBirth = Integer.parseInt(cDOBArray[0]);
@@ -226,6 +268,7 @@ public class Bank {
             Calendar cal = Calendar.getInstance();
             cal.set(yearOfBirth, monthOfBirth, dayOfBirth);
             Date cDateOfBirth = cal.getTime();
+
             String cAddress = jTmp.get("customerAddress").toString();
 
             Customer c = new Customer(cId, cName, cDateOfBirth, cAddress);
@@ -233,6 +276,15 @@ public class Bank {
         }
     }
 
+    /**
+     * The function fillAccountsArray takes in a JsonArray and
+     * uses it to populate the Bank's accounts array.
+     *
+     * Each iteration checks which type of Account Object is being
+     * worked with and creates the types accordingly.
+     *
+     * @param allAccounts sonArray containing all the accounts
+     */
     public void fillAccountsArray(JSONArray allAccounts) {
         Iterator<JSONObject> iterator = allAccounts.iterator();
         while(iterator.hasNext()) {
@@ -281,7 +333,9 @@ public class Bank {
     }
 
     /**
-     *
+     * Prinst all customers and accounts in one Json string
+     * to a file that can then be used to populate the Bank's
+     * database again.
      */
     public void prettyPrintAllEntitiesToFile() {
         JSONObject jObj = serializeAccounts(accounts);
@@ -294,12 +348,16 @@ public class Bank {
         printToFile(jObj, filePath);
     }
 
+    /**
+     * Prints out all the accounts in one Json string
+     */
     public void prettyPrintAllAccounts() {
         System.out.println(serializeAccounts(accounts).toJSONString());
     }
 
     /**
-     *
+     * Prints out all active accounts for a certain customer
+     * in one Json string
      */
     public void prettyPrintAllActiveAccountsFor() {
         Scanner in = new Scanner(System.in);
@@ -313,6 +371,12 @@ public class Bank {
         }
     }
 
+    /**
+     * Prints out all active accounts for a certain customer
+     * in one Json string
+     *
+     * @param customerId the customer's Id
+     */
     public void prettyPrintAllActiveAccountsFor(int customerId) {
         ArrayList<Account> tmpList = findAllActiveAccountsFor(customerId);
         if(tmpList.isEmpty()) {
@@ -334,6 +398,12 @@ public class Bank {
         return tmpList;
     }
 
+    /**
+     * Transforms a given list of accounts into a Json Object
+     *
+     * @param acc an array of accounts to be serialized
+     * @return a Json Object containing the array of accounts
+     */
     public JSONObject serializeAccounts(ArrayList<Account> acc) {
         JSONObject jObj = new JSONObject();
         JSONArray jArr = new JSONArray();

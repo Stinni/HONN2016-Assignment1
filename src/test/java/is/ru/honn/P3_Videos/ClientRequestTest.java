@@ -12,7 +12,7 @@ import static org.junit.Assert.*;
 public class ClientRequestTest {
     @Before
     public void setUp() throws Exception {
-
+        ClientRequest cRequest = new ClientRequest();
     }
 
     @After

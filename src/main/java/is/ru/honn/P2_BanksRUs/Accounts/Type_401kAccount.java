@@ -21,8 +21,12 @@ public class Type_401kAccount extends Account {
 
     /**
      * This constructor's only meant to be used when reading and populating the "database"
-     * from a file.
+     * from a file and for testing.
+     *
+     * @param accNumber the account number
+     * @param accOwner the account's owner's Id
      * @param aStatus The status of the account, true for active and false for inactive
+     * @param accName the account name
      * @param b The account's balance
      */
     public Type_401kAccount(int accNumber, int accOwner, boolean aStatus, String accName, double b) {

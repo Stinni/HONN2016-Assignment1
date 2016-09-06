@@ -38,9 +38,13 @@ abstract public class Account {
 
     /**
      * This constructor's only meant to be used when reading and populating the "database"
-     * from a file.
-     * @param aStatus The status of the account, true for active and false for inactive
-     * @param b The account's balance
+     * from a file and for testing.
+     *
+     * @param accNumber the account number
+     * @param accOwner the account's owner's Id
+     * @param aStatus the status of the account, true for active and false for inactive
+     * @param accName the account name
+     * @param b the account's balance
      */
     public Account(int accNumber, int accOwner, boolean aStatus, String accName, double b) {
         accountNumber = accNumber;
@@ -102,6 +106,7 @@ abstract public class Account {
 
     public abstract void withdraw(double amount) throws UnsupportedOperationException, IllegalArgumentException;
 
+    @Override
     public String toString() {
         return "{\"accountNumber\": " + accountNumber + ", \"accountOwner\": " + accountOwner +
                ", \"accountStatus\": " + accountStatus + ", \"accountName\": \"" + accountName +

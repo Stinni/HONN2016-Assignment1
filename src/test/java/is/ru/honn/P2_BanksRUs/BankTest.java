@@ -10,18 +10,16 @@ import static org.junit.Assert.*;
  * Created by KristinnHeiðar on 6.9.2016.
  */
 public class BankTest {
+    private Bank theBank;
+
     @Before
     public void setUp() throws Exception {
-
-    }
-
-    @After
-    public void tearDown() throws Exception {
-
+        theBank = new Bank("testData.json");
     }
 
     @Test
-    public void addCustomer() throws Exception {
+    public void testAddCustomer() throws Exception {
+        assertEquals(3.0, theBank.);
 
     }
 
@@ -56,26 +54,6 @@ public class BankTest {
     }
 
     @Test
-    public void prettyPrintAllEntitiesToFile() throws Exception {
-
-    }
-
-    @Test
-    public void prettyPrintAllAccounts() throws Exception {
-
-    }
-
-    @Test
-    public void prettyPrintAllActiveAccountsFor() throws Exception {
-
-    }
-
-    @Test
-    public void prettyPrintAllActiveAccountsFor1() throws Exception {
-
-    }
-
-    @Test
     public void findAllActiveAccountsFor() throws Exception {
 
     }
@@ -90,14 +68,13 @@ public class BankTest {
 
     }
 
-    @Test
+    /*@Test
     public void toString() throws Exception {
 
+    }*/
+
+    @After
+    public void tearDown() throws Exception {
+
     }
-
-    @Test
-    public void main() throws Exception {
-
-    }
-
 }

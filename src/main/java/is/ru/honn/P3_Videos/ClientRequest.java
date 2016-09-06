@@ -31,7 +31,7 @@ public class ClientRequest {
      *
      * @param fileName the file path and name
      * @return a Json string to be processed
-     * @throws RequestException
+     * @throws RequestException exception thrown with error message
      */
     public String getFileContent(String fileName) throws RequestException {
         JSONParser parser = new JSONParser();
@@ -58,7 +58,6 @@ public class ClientRequest {
      *
      * @param url the url/web location to be requested
      * @return a Json string to be processed
-     * @throws RequestException
      */
     public String getRequest(String url) {
         Client client = ClientBuilder.newBuilder().newClient();

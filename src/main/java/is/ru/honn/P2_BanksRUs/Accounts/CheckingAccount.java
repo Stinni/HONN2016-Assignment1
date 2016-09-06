@@ -36,9 +36,17 @@ public class CheckingAccount extends Account implements IOverdrawable {
 
     /**
      * This constructor's only meant to be used when reading and populating the "database"
-     * from a file.
-     * @param aStatus The status of the account, true for active and false for inactive
-     * @param b The account's balance
+     * from a file and for testing.
+     *
+     * @param accNumber the account number
+     * @param accOwner the account's owner's Id
+     * @param aStatus the status of the account, true for active and false for inactive
+     * @param accName the account name
+     * @param b the account's balance
+     * @param allowedOd the amount that the account can be overdrawn by
+     * @param numOfFreeWithdrawals the number of free withdrawals allowed
+     * @param numOfFreeWdDone the number of free withdrawals already done
+     * @param wFee the withdrawal fee
      */
     public CheckingAccount(int accNumber, int accOwner, boolean aStatus, String accName, double b,
                            double allowedOd, int numOfFreeWithdrawals, int numOfFreeWdDone, double wFee) {
